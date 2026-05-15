@@ -1,0 +1,359 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins',sans-serif;
+}
+html{
+  scroll-behavior: smooth;
+}
+body{
+  background: #1c1c1e;
+}
+
+.whole-frame{
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.top-white{
+  width: 100%;
+  height: 250px;
+  background: #e5e5ea;
+  border-bottom-left-radius: 100% 500px;
+  border-bottom-right-radius:100% 500px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.senji-logo img{
+  width: 350px;
+  height: auto;
+  margin-top: 20px;
+}
+
+.tagline{
+  padding:50px 20px;
+  text-align: center;
+  color: #e5e5ea;
+}
+
+.tagline h1{
+  font-size: 60px;
+  line-height: 1.2;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px 30px;
+  width: 220px;
+  height: 58px;
+
+  background: #007AFF;
+  color: #e5e5ea;
+  text-decoration: none;
+  border-radius: 8px;
+
+  font-size: 20px;
+  font-weight: 600;
+  
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn i {
+  opacity: 0;
+  width: 0;
+
+  transition: all 0.3s ease;
+
+  position: relative;
+  top: 2px;
+}
+.btn:hover{
+  width: 220px;
+  background-color: #004fa3;
+  color: #e5e5ea;
+}
+
+.btn:hover i{
+  opacity: 1;
+  width: 20px;
+  margin-left: 8px;
+}
+.line{
+  width: 30%;
+  height: 3px;
+  margin: 50px auto;
+
+  background:
+  linear-gradient(
+  to right,
+  transparent 0%,
+  rgba(255,255,255,0.9) 10%,
+  white 50%,
+  rgba(255,255,255,0.9) 90%,
+  transparent 100%
+    );
+  
+  border-radius:50px;
+  position:relative;
+}
+.Reels-vid video{
+  width: 70% ;
+  height: auto;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.wrapper{
+  align-items: center;
+  justify-content: center;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.wrapper h2{
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 35px;
+  margin-bottom: 15px;
+  color: #e5e5ea;
+}
+.carousel{
+  overflow-x: auto;
+  display: flex;
+
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgb(28, 28, 30) 15%,
+    rgb(28, 28, 30) 95%,
+    transparent 100%
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgb(28, 28, 30) 15%,
+    rgb(28, 28, 30) 95%,
+    transparent 100%
+  );
+}
+.carousel::-webkit-scrollbar{
+  display: none;
+}
+
+.clients{
+  width: max-content;
+  display: flex;
+  gap: 5em;
+  animation: spin 50s infinite linear;
+  padding-right: 5em;
+}
+
+.client{ 
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@keyframes spin {
+  from{translate: 0;}
+  to{translate: -100%;}
+}
+
+.avatar{
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 10px solid transparent;
+}
+
+.avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info{
+  display: flex;
+  flex-direction: column;
+}
+
+.name-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.name{
+  font-size: 28px;
+  font-weight: bold;
+  color: #e5e5ea;
+}
+
+.verified{
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #007AFF;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.verified::before{
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #e5e5ea;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.subs{
+  margin-top: 6px;
+  color: #8E8E93;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.feed-backs{
+  max-width:1200px;
+  margin: 40px auto;
+  padding:0 20px;
+}
+
+.feed-backs h2{
+  text-align:center;
+  font-size:40px;
+  color:#e5e5ea;
+  margin-bottom:40px;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  gap:30px;
+}
+
+.card{
+  background:#19191a;
+  border:2px solid #242222;
+  border-radius:10px;
+  padding:25px;
+}
+
+.top-feedback{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.card h3{
+  font-size:28px;
+  margin:0;
+  color:#e5e5ea;
+}
+
+.card span{
+  color:#8E8E93;
+  font-size:16px;
+}
+
+.card p{
+  font-size:18px;
+  line-height:1.5;
+  color:#e5e5ea;
+  margin-top:10px;
+}
+.my-works{
+  padding: 25px 20px;
+  text-align: center;
+}
+
+.my-works h2{
+  color: #e5e5ea;
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.my-works span{
+  color: #007AFF;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.grid iframe{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  border: none;
+}
+
+.work-w-me{
+  text-align: center;
+  padding: 20px 20px 50px;
+  color: #e5e5ea;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.work-w-me h2{
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+.work-w-me span{
+  color: #007AFF;
+}
+
+.senji-mail{
+  display: inline-flex;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #e5e5ea;    
+  font-family: Arial, sans-serif;
+  font-size: 19px;   
+  transition: color 0.3s ease; 
+}
+
+.senji-mail i {
+  font-size: 20px;
+  transition: inherit;
+}
+.senji-mail:hover {
+  color: #004fa3;   
+  cursor: pointer;
+}
+footer{
+  text-align: center;
+  color: #e5e5ea;
+  font-size: 15px;
+  margin-top: 150px;
+  padding-bottom: 10px;
+}
