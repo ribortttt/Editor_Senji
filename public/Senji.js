@@ -3,24 +3,23 @@ document.querySelector(".Reels-vid").classList.add("loaded");{
     const video = document.getElementById("my-video");
     const playBtn = document.getElementById("play-btn");
     const frames = document.querySelectorAll("iframe");
+    const container = document.querySelector(".Reels-vid");
     const cards = document.querySelectorAll(".card");
 
     video.addEventListener("loadeddata", () => {
-        document
-        .querySelector(".Reels-vid")
-        .classList.add("loaded");
-    });
+    container.classList.add("loaded");
+});
     playBtn.addEventListener("click", () => {
-        if (video.paused) {
 
-            video.play();
-            playBtn.textContent = "❚❚";
-        } else {
+    if(video.paused){
+        video.play();
+        playBtn.textContent = "❚❚";
+    } else {
+        video.pause();
+        playBtn.textContent = "▶";
+    }
 
-            video.pause();
-            playBtn.textContent = "▶";
-        }
-    });
+});
 const observer = new IntersectionObserver((entries) => {
 
     entries.forEach(entry => {
