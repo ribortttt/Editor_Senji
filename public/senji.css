@@ -640,9 +640,9 @@ video{
 .clients{
   width: max-content;
   display: flex;
-  gap: 5em;
+  gap: 6em;
   animation: spin 50s infinite linear;
-  padding-right: 5em;
+  padding-right: 6%;
 }
 
 .client{ 
