@@ -177,10 +177,31 @@ async function sendMessage(){
     Here are my projects.`;}
 
     else if(message === "contact"){
-    reply = `You can contact me through:<br>
+    reply = `You can contact me through:<br><br>
     📧: <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
     🎮: senji_1228<br>
     ✖️: <a href=" https://x.com/EditorSenjiPh" target="_blank">EditorSenjiPh</a>`;}
+    
+    else if(message === "rates"){
+    reply = `
+    Pricing depends on the complexity of the video and the
+    level of editing required. For a detailed quote or to
+    discuss your project, feel free to contact me through
+    the social media links below.<br><br>
+    • Email: <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
+    • Discord: senji_1228<br>
+    • Twitter/X: <a href=" https://x.com/EditorSenjiPh" target="_blank">EditorSenjiPh</a>`;}
+
+    else if(message === "about"){
+    reply = `Hi, I'm Senji, a freelance video editor.
+     I specialize in creating engaging edits for content creators.<br><br>
+
+    • Gaming Videos<br>
+    • YouTube Content<br>
+    • Shorts, Reels, and TikTok Videos<br>
+    • Motion Graphics<br><br>
+
+    I focus on high-quality, creative editing that helps creators grow their audience.`;}
 
     else {
     typing.classList.remove("hidden");
@@ -240,7 +261,7 @@ chatBtn.addEventListener("click", () => {
             botMsg.classList.add("bot-message");
 
             botMsg.textContent =
-                "👋 Hi! What would you like to know about me?";
+                "Hi👋! What would you like to know about me?";
 
             chatBody.appendChild(botMsg);
             showSuggestions();
@@ -268,7 +289,9 @@ function showSuggestions() {
 
     suggestionBox.innerHTML = `
         <button class="suggestion">Portfolio</button>
-        <button class="suggestion">Contact</button>`;
+        <button class="suggestion">Contact</button>
+        <button class="suggestion">Rates</button>
+        <button class="suggestion">About</button>`;
 
     chatBody.appendChild(suggestionBox);
 
@@ -286,21 +309,28 @@ closeChat.addEventListener("click", () => {
     document.querySelector(".chat-container").classList.remove("active");
 });
 function formatAI(text) {
-    if (!text.includes("•")) return text;
-
     return text
-        .split("•")
-        .filter(t => t.trim())
-        .map(t => `<div>• ${t.trim()}</div>`)
+        .split("\n")
+        .map(line => {
+            line = line.trim();
+            line = line.replace(
+                /\*\*(.*?)\*\*/g,
+                "<strong>$1</strong>"
+            );
+            if (line.startsWith("•")) {
+                return `<div class="bullet">${line}</div>`;
+            }
+            return `<div>${line}</div>`;
+        })
         .join("");
 }
 async function getGeminiResponse(userText) {
      try {
 
-    const API_KEY = "AQ.Ab8RN6JVl_adJpyqDYtCtyPUmU12dGdPOmhEuuiD7y6AD9iFQQ";
+    const API_KEY = "AQ.Ab8RN6J8IdKzMdft80K5V1WfwbsFCJDv9OznseIt5ySS5V6uaA";
 
     const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+        "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent",
         {
             method: "POST",
             headers: {
@@ -313,18 +343,53 @@ async function getGeminiResponse(userText) {
                         role: "user",
                         parts: [
                             {
-                                text: `You are Senji's portfolio assistant.
+                                text: `
+                                You are Senji's Portfolio Assistant.
 
-                                Rules:
-                                - If the answer is a normal explanation → write normal paragraph (no bullets)
-                                - If the answer is steps, instructions, or multiple items → use bullet points
-                                - Each bullet must be on a NEW LINE (never in one line)
-                                - Always start bullets with "• "
-                                - Never combine multiple bullets in one line
-                                - Keep answers clean and easy to read
-                                - No emojis
+                                IMPORTANT RULES:
+                                - Never use Markdown.
+                                - Never use **bold**
+                                - Never use # headings
+                                - Use plain text only.
+                                - For lists, use only "•" bullet points.
+                                - Put each bullet on a new line.
 
-                                User: ${userText}`
+                                Information:
+
+                                Name: Senji
+                                Role: Video Editor
+
+                                Services:
+                                • Gaming Videos
+                                • YouTube Editing
+                                • Shorts/Reels/TikTok Editing
+                                • Motion Graphics
+
+                                Contact:
+                                Email: editorsenji@gmail.com
+                                Discord: senji_1228
+                                Twitter/X: https://x.com/EditorSenjiPh
+
+                                Rates:
+                                Pricing depends on the complexity of the video and the 
+                                level of editing required. For a detailed quote or to 
+                                discuss your project, feel free to contact me through 
+                                the social media links below.
+
+                                • Email: editorsenji@gmail.com
+                                • Discord: senji_1228
+                                • Twitter/X: https://x.com/EditorSenjiPh
+
+                                FAQ:
+                                Q: How can I contact Senji?
+                                A: Through email, Discord, or Twitter.
+
+                                Q: What are the editing rates?
+                                A: Depends on project scope.
+
+                                Always answer based on the information above.
+                                If the user asks something unrelated, answer normally.
+                                User Question: ${userText}`
                             }
                         ]
                     }
@@ -335,25 +400,25 @@ async function getGeminiResponse(userText) {
 
     const data = await response.json();
 
-        console.log("API FULL RESPONSE:", data);
+    console.log(data);
 
-        if (userText.length < 2) {
-        return "Please type a longer message.";
-        }
+    if (!response.ok) {
+    if (response.status === 429) {
+        throw new Error(
+            "The AI service is temporarily unavailable because the quota limit has been reached. Please try again later."
+        );
+    }
+    throw new Error(
+        data.error?.message || "Unknown API Error"
+    );
+    }
 
-        if (!response.ok) {
-        return "⚠️ API Error";
-        }
-
-        if (!data.candidates || !data.candidates[0]) {
-        return "⚠️ No AI response (check API quota or request format)";
-        }
-
-        return data.candidates[0].content.parts[0].text;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text ||
+       "No response received.";
 
     } catch (err) {
-        console.log("CATCH ERROR:", err);
-        return "⚠️ Network error or API blocked";
+    console.error(err);
+    return `Error: ${err.message}`;
     }
 }
 

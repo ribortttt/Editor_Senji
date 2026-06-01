@@ -1132,6 +1132,11 @@ box-shadow:0 10px 30px rgba(0,0,0,.12);
 .bot-message li {
     margin-bottom: 6px;
 }
+.bullet {
+    margin-left: 5px;
+    margin-bottom: 6px;
+    margin-top: 10px;
+}
 .user-message{
     background:var(--text-color);
     color:var(--bg-color);
