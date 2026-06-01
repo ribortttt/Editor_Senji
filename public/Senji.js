@@ -328,10 +328,10 @@ function formatAI(text) {
 async function getGeminiResponse(userText) {
      try {
 
-    const API_KEY = "AQ.Ab8RN6Ivq6Qynv9ASLjCRKD-MMkAuM21Kvdf49PlVJkBcd54FA";
+    const API_KEY = "AQ.Ab8RN6LpBxoG-DjT0dLhAkojWCwbfAFwOVXtOeKuzkkfNCDhwg";
 
     const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
         {
             method: "POST",
             headers: {
