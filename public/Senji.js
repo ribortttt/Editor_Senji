@@ -18,7 +18,6 @@ document.querySelector(".Reels-vid").classList.add("loaded");{
     const typing = document.getElementById("typing");
     const themeBtn = document.getElementById("theme-toggle");
     const icon = themeBtn.querySelector("i");
-   
 
 
 
@@ -328,7 +327,7 @@ function formatAI(text) {
 async function getGeminiResponse(userText) {
      try {
 
-    const API_KEY = "AQ.Ab8RN6LpBxoG-DjT0dLhAkojWCwbfAFwOVXtOeKuzkkfNCDhwg";
+    const API_KEY = "AQ.Ab8RN6Lq-x0Df69fvIKd3PvyIqEUUsr-H0ifSGRe6-6rlgq_0g";
 
     const response = await fetch(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
@@ -336,7 +335,7 @@ async function getGeminiResponse(userText) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-goog-api-key": API_KEY
+                 "X-goog-api-key": API_KEY
             },
             body: JSON.stringify({
                 contents: [
@@ -398,7 +397,7 @@ async function getGeminiResponse(userText) {
             })
         }
     );
-
+    
     const data = await response.json();
 
     console.log(data);
