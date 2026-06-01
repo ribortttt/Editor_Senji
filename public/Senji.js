@@ -17,7 +17,8 @@ document.querySelector(".Reels-vid").classList.add("loaded");{
     const chatBody = document.getElementById("chatBody");
     const typing = document.getElementById("typing");
     const themeBtn = document.getElementById("theme-toggle");
-    
+    const icon = themeBtn.querySelector("i");
+   
 
 
 
@@ -428,5 +429,13 @@ if (localStorage.getItem("theme") === "dark") {
 
 themeBtn.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    }
 });
 };
