@@ -16,13 +16,14 @@
 <body>
   
   <div id="root"></div>
+
   <div class="whole-frame">
 
-    
-    <section class="profile-cover">
+    <button id="theme-toggle" class="theme-toggle">
+    <span class="toggle-thumb">
+        <i class="fa-solid fa-moon"></i></span></button>
 
-        <div class="top-tag">
-    @EDITORSENJIPH</div>
+    <section class="profile-cover">
 
     <div class="senji-profile">
       <img src="images/senjiart.jpg"></div>
@@ -416,8 +417,49 @@ value="0">
         Work with me<i class="fa-solid fa-arrow-right"></i></a>
 
   <a href="mailto:editorsenji@gmail.com" target="_blank" class="senji-mail">
-    <i class="fa-regular fa-envelope"></i><p>editorsenji@gmail.com</p></a>
+    <i class="fa-regular fa-envelope"></i><span>editorsenji@gmail.com</span></a>
   </section>
+
+<section class="chat-container">
+    <button class="chat-launcher" id="chatBtn"><i class="fa-regular fa-message"></i>
+        Chat with Senji</button>
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <div class="chat-profile">
+                <img src="images/senjiart.jpg" alt="">
+                <div>
+                    <h3>Chat with Senji</h3>
+                    <span class="online">● Online</span>
+                </div>
+            </div>
+            <button class="close-chat" id="closeChat">
+                <i class="fa-solid fa-xmark"></i></button></div>
+        <div class="chat-body" id="chatBody">
+            <div class="bot-info">
+                <img src="images/senjiart.jpg" alt="">
+                <span>Senji</span>
+            </div>
+            <div class="bot-message">
+                Hi there 👋! Thanks for visiting my portfolio.
+                Feel free to ask me about editing, content creation,
+                or how we can work together.</div>
+        </div>
+
+        <div id="typing" class="typing hidden">Typing 
+        <span class="dots"></span>
+        <span></span>
+        <span></span>
+    </div>
+        <div class="chat-footer">
+    <input
+    type="text"
+    id="userInput"
+    placeholder="Type a message...">
+    <button id="sendBtn"><i class="fa-solid fa-arrow-right"></i></button>
+</div>
+
+    </div>
+</section>
 
   <footer>Copyright 2026. Senji Editor - All Rights Reserved</footer>
   
