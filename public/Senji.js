@@ -1,12 +1,6 @@
-document.querySelector(".Reels-vid").classList.add("loaded");{
+document.addEventListener("DOMContentLoaded", () => {
 
-    const video = document.getElementById("my-video");
-    const container = document.querySelector(".Reels-vid");
-    const playBtn = document.getElementById("play-btn");
-    const volumeBtn = document.getElementById("volume-btn");
-    const volumeSlider = document.getElementById("volume-slider");
     const frames = document.querySelectorAll("iframe");
-    const cards = document.querySelectorAll(".card");
     const aboutContainer = document.querySelector(".about-container");
     const chatBtn = document.getElementById("chatBtn");
     const closeChat = document.getElementById("closeChat");
@@ -17,76 +11,72 @@ document.querySelector(".Reels-vid").classList.add("loaded");{
     const chatBody = document.getElementById("chatBody");
     const typing = document.getElementById("typing");
     const themeBtn = document.getElementById("theme-toggle");
-    const icon = themeBtn.querySelector("i");
+    const icon = themeBtn ? themeBtn.querySelector("i") : null;
 
 
+const feedbackCards = document.querySelector(".cards");
 
+if (feedbackCards) {
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
 
-    let hideTimeout
+    let targetScroll = feedbackCards.scrollLeft;
+    let animationFrame = null;
 
-    video.addEventListener("loadeddata", () => {
-    container.classList.add("loaded");
-});
-
-function showIcon(type){
-
-    if(type === "play"){
-        playBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-    } else {
-        playBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    function smoothScroll() {
+        feedbackCards.scrollLeft +=
+            (targetScroll - feedbackCards.scrollLeft) * 0.12;
+        if (Math.abs(targetScroll - feedbackCards.scrollLeft) > 0.5) {
+            animationFrame = requestAnimationFrame(smoothScroll);
+        } else {
+            feedbackCards.scrollLeft = targetScroll;
+            animationFrame = null;
+        }
     }
-    playBtn.classList.add("show");
-    clearTimeout(hideTimeout);
-    hideTimeout = setTimeout(() => {
-        playBtn.classList.remove("show");
-    }, 800);
+
+    feedbackCards.addEventListener("pointerdown", (e) => {
+        isDragging = true;
+        feedbackCards.setPointerCapture(e.pointerId);
+        feedbackCards.classList.add("dragging");
+        startX = e.clientX;
+        startScrollLeft = feedbackCards.scrollLeft;
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+        targetScroll = feedbackCards.scrollLeft;
+    });
+    feedbackCards.addEventListener("pointermove", (e) => {
+        if (!isDragging) return;
+        const distance = e.clientX - startX;
+        feedbackCards.scrollLeft =
+            startScrollLeft - distance * 1.2;
+        targetScroll = feedbackCards.scrollLeft;
+    });
+    function stopDragging(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        feedbackCards.classList.remove("dragging");
+        feedbackCards.releasePointerCapture(e.pointerId);
+    }
+    feedbackCards.addEventListener("pointerup", stopDragging);
+    feedbackCards.addEventListener("pointercancel", stopDragging);
+    feedbackCards.addEventListener("wheel", (e) => {
+
+        e.preventDefault();
+
+        const delta =
+            Math.abs(e.deltaX) > Math.abs(e.deltaY)
+                ? e.deltaX
+                : e.deltaY;
+        targetScroll += delta * 2.5;
+        if (!animationFrame) {
+            animationFrame =
+                requestAnimationFrame(smoothScroll);
+        }
+    }, { passive: false });
 }
-
-video.addEventListener("click", () => {
-
-    if(video.paused){
-        video.play();
-        showIcon("pause");
-    } else {
-        video.pause();
-        showIcon("play");
-    }
-});
-
-volumeSlider.addEventListener("input", () => {
-    video.muted = false;
-    video.volume = volumeSlider.value;
-
-    if(video.volume == 0){
-        volumeBtn.innerHTML =
-        '<i class="fa-solid fa-volume-xmark"></i>';
-    } else {
-        volumeBtn.innerHTML =
-        '<i class="fa-solid fa-volume-high"></i>';
-    }
-});
-
-volumeBtn.addEventListener("click", () => {
-
-    video.muted = !video.muted;
-
-    if(video.muted){
-
-        volumeBtn.innerHTML =
-        '<i class="fa-solid fa-volume-xmark"></i>';
-
-        volumeSlider.value = 0;
-
-    } else {
-
-        volumeBtn.innerHTML =
-        '<i class="fa-solid fa-volume-high"></i>';
-
-        volumeSlider.value = 1;
-        video.volume = 1;
-    }
-
-});
 
 const observer = new IntersectionObserver((entries) => {
 
@@ -97,68 +87,60 @@ const observer = new IntersectionObserver((entries) => {
         }});}, {
     threshold: 0.2
 });
-frames.forEach(frame => {
+[...frames].forEach((frame,index)=>{
+
     observer.observe(frame);
-});
-frames.forEach((frame, index) => {
-    frame.style.transitionDelay = `${index * 0.1}s`;
-});
 
-cards.forEach(card => {
-    card.addEventListener("mousemove", (e) => {
+    frame.style.transitionDelay =
+        `${index*0.1}s`;
 
-        const rect = card.getBoundingClientRect();
+});;
 
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+if(aboutContainer){
 
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
+const aboutObserver =
+new IntersectionObserver(entries=>{
 
-        const rotateX = ((y - centerY) / centerY) * -12;
-        const rotateY = ((x - centerX) / centerX) * 12;
+    entries.forEach(entry=>{
 
-        card.style.transform = `
-            perspective(1200px)
-            rotateX(${rotateX}deg)
-            rotateY(${rotateY}deg)
-            scale(1.05)
-        `;
-    });
-    card.addEventListener("mouseleave", () => {
-        card.style.transform = `
-            perspective(1200px)
-            rotateX(0deg)
-            rotateY(0deg)
-            scale(1)
-        `;
+        if(entry.isIntersecting){
+
+            aboutContainer.classList.add("show");
+
+        }
+
     });
 
+},{
+    threshold:0.2
 });
+aboutObserver.observe(aboutContainer);
+}
 
-window.addEventListener("scroll", () => {
-  const triggerBottom = window.innerHeight * 0.85;
 
-  const containerTop = aboutContainer.getBoundingClientRect().top;
+if (sendBtn) {
+    sendBtn.addEventListener("click", sendMessage);
+}
 
-  if (containerTop < triggerBottom) {
-    aboutContainer.classList.add("show");
-  }
-});
-
-sendBtn.addEventListener("click", sendMessage);
-
-userInput.addEventListener("keypress", function(e){
+if (userInput) {
+userInput.addEventListener("keydown", function(e){
     if(e.key === "Enter"){
         sendMessage();
     }
 });
+}
 
+document.querySelector(".chat-suggestions")
+?.remove();
 async function sendMessage(){
 
     
     let text = userInput.value.trim();
-    if(text === "") return;
+
+    if (text === "") return;
+
+    sendBtn.disabled = true;
+    userInput.disabled = true;
 
     const userMsg = document.createElement("div");
     userMsg.classList.add("user-message");
@@ -204,24 +186,33 @@ async function sendMessage(){
     I focus on high-quality, creative editing that helps creators grow their audience.`;}
 
     else {
+
     typing.classList.remove("hidden");
 
-    const aiReply = await getGeminiResponse(text);
+    setTimeout(() => {
 
-    typing.classList.add("hidden");
+        typing.classList.add("hidden");
 
-    const botMsg = document.createElement("div");
-    botMsg.classList.add("bot-message");
+        const botMsg = document.createElement("div");
+        botMsg.classList.add("bot-message");
 
-    botMsg.innerHTML = formatAI(aiReply) + getContactFooter();
+        botMsg.innerHTML = `
+            ⚠️ AI Assistant is temporarily offline.<br><br>
+            Please use one of the suggestions below or contact me directly.
+            ${getContactFooter()}`;
 
-    chatBody.appendChild(botMsg);
-    chatBody.scrollTop = chatBody.scrollHeight;
+        chatBody.appendChild(botMsg);
+        chatBody.scrollTop = chatBody.scrollHeight;
 
-    showSuggestions();
+        showSuggestions();
+
+        sendBtn.disabled = false;
+        userInput.disabled = false;
+
+    }, 700);
+
     return;
-
-    }
+}
     typing.classList.remove("hidden");
 
     setTimeout(() => {
@@ -239,10 +230,14 @@ async function sendMessage(){
     chatBody.scrollTop = chatBody.scrollHeight;
 
     showSuggestions();
+    sendBtn.disabled = false;
+    userInput.disabled = false;
 
     }, 800);
 }
 let greeted = false;
+if(chatBtn){
+
 chatBtn.addEventListener("click", () => {
     chatBox.classList.add("active");
     document.querySelector(".chat-container").classList.add("active");
@@ -254,6 +249,9 @@ chatBtn.addEventListener("click", () => {
         typing.classList.remove("hidden");
 
         setTimeout(() => {
+
+            sendBtn.disabled = false;
+            userInput.disabled = false;
 
             typing.classList.add("hidden");
 
@@ -267,7 +265,7 @@ chatBtn.addEventListener("click", () => {
             showSuggestions();
         }, 1200);
     }
-});
+});}
 
 function getContactFooter() {
     return `
@@ -304,137 +302,38 @@ function showSuggestions() {
 
     chatBody.scrollTop = chatBody.scrollHeight;
 }
+if(closeChat){
 closeChat.addEventListener("click", () => {
     chatBox.classList.remove("active");
     document.querySelector(".chat-container").classList.remove("active");
 });
-function formatAI(text) {
-    return text
-        .split("\n")
-        .map(line => {
-            line = line.trim();
-            line = line.replace(
-                /\*\*(.*?)\*\*/g,
-                "<strong>$1</strong>"
-            );
-            if (line.startsWith("•")) {
-                return `<div class="bullet">${line}</div>`;
-            }
-            return `<div>${line}</div>`;
-        })
-        .join("");
-}
-async function getGeminiResponse(userText) {
-     try {
-
-    const API_KEY = "AQ.Ab8RN6Lq-x0Df69fvIKd3PvyIqEUUsr-H0ifSGRe6-6rlgq_0g";
-
-    const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                 "X-goog-api-key": API_KEY
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [
-                            {
-                                text: `
-                                You are Senji's Portfolio Assistant.
-
-                                IMPORTANT RULES:
-                                - Never use Markdown.
-                                - Never use **bold**
-                                - Never use # headings
-                                - Use plain text only.
-                                - For lists, use only "•" bullet points.
-                                - Put each bullet on a new line.
-
-                                Information:
-
-                                Name: Senji
-                                Role: Video Editor
-
-                                Services:
-                                • Gaming Videos
-                                • YouTube Editing
-                                • Shorts/Reels/TikTok Editing
-                                • Motion Graphics
-
-                                Contact:
-                                Email: editorsenji@gmail.com
-                                Discord: senji_1228
-                                Twitter/X: https://x.com/EditorSenjiPh
-
-                                Rates:
-                                Pricing depends on the complexity of the video and the 
-                                level of editing required. For a detailed quote or to 
-                                discuss your project, feel free to contact me through 
-                                the social media links below.
-
-                                • Email: editorsenji@gmail.com
-                                • Discord: senji_1228
-                                • Twitter/X: https://x.com/EditorSenjiPh
-
-                                FAQ:
-                                Q: How can I contact Senji?
-                                A: Through email, Discord, or Twitter.
-
-                                Q: What are the editing rates?
-                                A: Depends on project scope.
-
-                                Always answer based on the information above.
-                                If the user asks something unrelated, answer normally.
-                                User Question: ${userText}`
-                            }
-                        ]
-                    }
-                ]
-            })
-        }
-    );
-    
-    const data = await response.json();
-
-    console.log(data);
-
-    if (!response.ok) {
-    if (response.status === 429) {
-        throw new Error(
-            "The AI service is temporarily unavailable because the quota limit has been reached. Please try again later."
-        );
-    }
-    throw new Error(
-        data.error?.message || "Unknown API Error"
-    );
-    }
-
-    return data.candidates?.[0]?.content?.parts?.[0]?.text ||
-       "No response received.";
-
-    } catch (err) {
-    console.error(err);
-    return `Error: ${err.message}`;
-    }
 }
 
-if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
+function updateTheme() {
+    const dark = document.body.classList.contains("dark-mode");
+
+    icon.classList.toggle("fa-sun", !dark);
+    icon.classList.toggle("fa-moon", dark);
+
+    localStorage.setItem("theme", dark ? "dark" : "light");
 }
 
-themeBtn.addEventListener("click", () => {
+if (themeBtn && icon) {
+
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+
+    updateTheme();
+
+    themeBtn.addEventListener("click", () => {
+    console.log("clicked");
     document.body.classList.toggle("dark-mode");
-
-    if (document.body.classList.contains("dark-mode")) {
-        icon.classList.remove("fa-sun");
-        icon.classList.add("fa-moon");
-    } else {
-        icon.classList.remove("fa-moon");
-        icon.classList.add("fa-sun");
-    }
+    updateTheme();
 });
-};
+
+}
+
+});
