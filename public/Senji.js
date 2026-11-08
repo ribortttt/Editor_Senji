@@ -14,69 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const icon = themeBtn ? themeBtn.querySelector("i") : null;
 
 
-const feedbackCards = document.querySelector(".cards");
-
-if (feedbackCards) {
-    let isDragging = false;
-    let startX = 0;
-    let startScrollLeft = 0;
-
-    let targetScroll = feedbackCards.scrollLeft;
-    let animationFrame = null;
-
-    function smoothScroll() {
-        feedbackCards.scrollLeft +=
-            (targetScroll - feedbackCards.scrollLeft) * 0.12;
-        if (Math.abs(targetScroll - feedbackCards.scrollLeft) > 0.5) {
-            animationFrame = requestAnimationFrame(smoothScroll);
-        } else {
-            feedbackCards.scrollLeft = targetScroll;
-            animationFrame = null;
-        }
-    }
-
-    feedbackCards.addEventListener("pointerdown", (e) => {
-        isDragging = true;
-        feedbackCards.setPointerCapture(e.pointerId);
-        feedbackCards.classList.add("dragging");
-        startX = e.clientX;
-        startScrollLeft = feedbackCards.scrollLeft;
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-        }
-        targetScroll = feedbackCards.scrollLeft;
-    });
-    feedbackCards.addEventListener("pointermove", (e) => {
-        if (!isDragging) return;
-        const distance = e.clientX - startX;
-        feedbackCards.scrollLeft =
-            startScrollLeft - distance * 1.2;
-        targetScroll = feedbackCards.scrollLeft;
-    });
-    function stopDragging(e) {
-        if (!isDragging) return;
-        isDragging = false;
-        feedbackCards.classList.remove("dragging");
-        feedbackCards.releasePointerCapture(e.pointerId);
-    }
-    feedbackCards.addEventListener("pointerup", stopDragging);
-    feedbackCards.addEventListener("pointercancel", stopDragging);
-    feedbackCards.addEventListener("wheel", (e) => {
-
-        e.preventDefault();
-
-        const delta =
-            Math.abs(e.deltaX) > Math.abs(e.deltaY)
-                ? e.deltaX
-                : e.deltaY;
-        targetScroll += delta * 2.5;
-        if (!animationFrame) {
-            animationFrame =
-                requestAnimationFrame(smoothScroll);
-        }
-    }, { passive: false });
-}
 
 const observer = new IntersectionObserver((entries) => {
 
@@ -152,29 +89,36 @@ async function sendMessage(){
 
     const message = text.toLowerCase();
     let reply = "";
+    let showFooter = true;
+
+    const has = (...words) =>
+        words.some(w => new RegExp("\\b" + w + "\\b").test(message));
     
 
-    if(message === "portfolio"){
-    reply = `Welcome to Senji's portfolio 🚀<br>
+    if(has("portfolio", "projects", "samples", "examples")){
+    reply = `Welcome to Senji's portfolio <br>
     Here are my projects.`;}
 
-    else if(message === "contact"){
+    else if(has("contact", "email", "discord", "twitter", "reach", "X", "ig")){
     reply = `You can contact me through:<br><br>
     📧: <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
-    🎮: senji_1228<br>
-    ✖️: <a href=" https://x.com/EditorSenjiPh" target="_blank">EditorSenjiPh</a>`;}
+    🎮: editorsenji<br>
+    ✖️: <a href="https://x.com/editorsenji" target="_blank">@editorsenji</a><br>
+    📷: <a href="https://www.instagram.com/editorsenji/" target="_blank">@editorsenji</a>`;
+    showFooter = false;}
     
-    else if(message === "rates"){
+    else if(has("rates", "rate", "price", "pricing", "cost", "quote", "charge", "how much", "hm")){
     reply = `
     Pricing depends on the complexity of the video and the
     level of editing required. For a detailed quote or to
     discuss your project, feel free to contact me through
     the social media links below.<br><br>
     • Email: <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
-    • Discord: senji_1228<br>
-    • Twitter/X: <a href=" https://x.com/EditorSenjiPh" target="_blank">EditorSenjiPh</a>`;}
+    • Discord: editorsenji<br>
+    • X: <a href=" https://x.com/editorsenji" target="_blank">@editorsenji</a><br>
+    • Instagram: <a href=" https://www.instagram.com/editorsenji/" target="_blank">@editorsenji</a>`;}
 
-    else if(message === "about"){
+    else if(has("about", "who", "services", "specialize", "what do you do")){
     reply = `Hi, I'm Senji, a freelance video editor.
      I specialize in creating engaging edits for content creators.<br><br>
 
@@ -184,6 +128,20 @@ async function sendMessage(){
     • Motion Graphics<br><br>
 
     I focus on high-quality, creative editing that helps creators grow their audience.`;}
+
+    else if(has("hire", "book", "commission", "available", "availability")){
+    reply = `Thanks for your interest! 🎬<br>
+    Send me the details of your project through the links below
+    and I'll get back to you.`;}
+
+    else if(has("hi", "hello", "hey")){
+    reply = `Hey there 👋<br>
+    Ask me about my portfolio, rates, or how to contact me.`;
+    showFooter = false;}
+
+    else if(has("thanks", "thank you")){
+    reply = `You're welcome! 😊`;
+    showFooter = false;}
 
     else {
 
@@ -196,10 +154,11 @@ async function sendMessage(){
         const botMsg = document.createElement("div");
         botMsg.classList.add("bot-message");
 
-        botMsg.innerHTML = `
-            ⚠️ AI Assistant is temporarily offline.<br><br>
-            Please use one of the suggestions below or contact me directly.
-            ${getContactFooter()}`;
+        botMsg.innerHTML = `You can contact me through:<br><br>
+            📧: <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
+            🎮: editorsenji<br>
+            ✖️: <a href="https://x.com/EditorSenjiPh" target="_blank">@editorsenji</a><br>
+            📷: <a href="https://www.instagram.com/editorsenji/" target="_blank">@editorsenji</a>`;
 
         chatBody.appendChild(botMsg);
         chatBody.scrollTop = chatBody.scrollHeight;
@@ -219,12 +178,11 @@ async function sendMessage(){
 
     typing.classList.add("hidden");
 
-    const shouldShowFooter = message !== "contact";
     const botMsg = document.createElement("div");
     botMsg.classList.add("bot-message");
 
     botMsg.innerHTML =
-    reply + (shouldShowFooter ? getContactFooter() : "");
+    reply + (showFooter ? getContactFooter() : "");
 
     chatBody.appendChild(botMsg);
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -274,7 +232,8 @@ function getContactFooter() {
     <small>
         📧 <a href="mailto:editorsenji@gmail.com">editorsenji@gmail.com</a><br>
         🎮 senji_1228<br>
-        ✖️ <a href="https://x.com/EditorSenjiPh" target="_blank">@EditorSenjiPh</a>
+        ✖️ <a href="https://x.com/EditorSenjiPh" target="_blank">@editorsenji</a><br>
+        📷 <a href="https://www.instagram.com/editorsenji/" target="_blank">@editorsenji</a>
         </small>`;
 }
 function showSuggestions() {
@@ -309,30 +268,33 @@ closeChat.addEventListener("click", () => {
 });
 }
 
-function updateTheme() {
-    const dark = document.body.classList.contains("dark-mode");
+let themeTimer;
 
-    icon.classList.toggle("fa-sun", !dark);
-    icon.classList.toggle("fa-moon", dark);
+function applyTheme(isDark) {
+    document.body.classList.toggle("dark-mode", isDark);
 
-    localStorage.setItem("theme", dark ? "dark" : "light");
+    icon.classList.toggle("fa-moon", isDark);
+    icon.classList.toggle("fa-sun", !isDark);
+
+    localStorage.setItem("theme", isDark ? "dark" : "light");
 }
 
 if (themeBtn && icon) {
 
     const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme === "dark") {
-        document.body.classList.add("dark-mode");
-    }
-
-    updateTheme();
+    applyTheme(savedTheme !== "light");
 
     themeBtn.addEventListener("click", () => {
-    console.log("clicked");
-    document.body.classList.toggle("dark-mode");
-    updateTheme();
-});
+        const root = document.documentElement;
+
+        root.classList.add("theme-transition");
+        applyTheme(!document.body.classList.contains("dark-mode"));
+
+        clearTimeout(themeTimer);
+        themeTimer = setTimeout(() => {
+            root.classList.remove("theme-transition");
+        }, 500);
+    });
 
 }
 
